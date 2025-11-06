@@ -127,7 +127,7 @@ if st.checkbox("Enable Machine Learning Model Training"):
             # ============================================
             # FEATURE IMPORTANCE SECTION (Dynamic)
             # ============================================
-         st.markdown("---")
+        st.markdown("---")
         st.subheader(f"Feature Importance / Coefficients ({model_choice})")
 
         model = pipeline.named_steps['model']
