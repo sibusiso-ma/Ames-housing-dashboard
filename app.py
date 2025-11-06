@@ -16,10 +16,20 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
 st.title('Property Data Dashboard - Advanced ML & Data Cleaning')
 
-upload_file = st.file_uploader("Upload Housing CSV file",type='csv')
+@st.cache_data
+def load_data():
+    url = "https://raw.githubusercontent.com/sibusiso-ma/Ames-housing-dashboard/main/AmesHousing.csv"
+    df = pd.read_csv(url)
+    return df
 
-if upload_file is not None:
-    df = pd.read_csv(upload_file)
+
+
+df = load_data()
+
+
+
+
+   
 
     # Data Preview
     st.subheader('Data Preview')
@@ -152,5 +162,4 @@ if upload_file is not None:
         else:
             st.warning("Please select at least ONE feature column!")
 
-else:
-    st.write("Waiting for CSV upload...")
+
