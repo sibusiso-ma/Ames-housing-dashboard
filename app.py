@@ -14,7 +14,7 @@ from sklearn.linear_model import LinearRegression, Lasso, Ridge
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
-st.title('Property Data Dashboard - Advanced ML & Data Cleaning')
+st.title('Ames Data Dashboard - Advanced ML & Data Cleaning')
 
 @st.cache_data
 def load_data():
