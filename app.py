@@ -157,7 +157,7 @@ if st.checkbox("Enable Machine Learning Model Training"):
             st.pyplot(fig)
     else:
                 st.warning("Feature importance not available for this model type.")
- else:
+else:
             st.warning("Please select at least ONE feature column!")
 
 
