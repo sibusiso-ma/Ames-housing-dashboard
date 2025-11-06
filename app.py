@@ -109,7 +109,7 @@ if st.checkbox("Enable Machine Learning Model Training"):
                 pipeline_steps.append(('model', Lasso(alpha=0.1)))
         elif model_choice == "Ridge":
                 pipeline_steps.append(('model', Ridge(alpha=1.0)))
-         elif model_choice == "Random Forest":
+        elif model_choice == "Random Forest":
                 pipeline_steps.append(('model', RandomForestRegressor(n_estimators=200, random_state=42)))
 
         pipeline = Pipeline(pipeline_steps)
