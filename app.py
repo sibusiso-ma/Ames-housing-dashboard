@@ -145,10 +145,20 @@ if st.checkbox("Enable Machine Learning Model Training"):
                     "Importance": feature_importance
                 }).sort_values(by="Importance", ascending=False)
 
-               if len(feature_cols) > 1:
-                      top_n = st.slider("Show top N features:", 1, len(feature_cols), min(10, len(feature_cols)))
-               else:
-                       top_n = 1
+                 if len(feature_cols) == 0:
+                                top_n = 0
+
+                  elif len(feature_cols) == 1:
+                             top_n = 1
+
+                    else:
+                           top_n = st.slider(
+                             "Show top N features:",
+                               min_value=1,
+                               max_value=len(feature_cols),
+                               value=min(10, len(feature_cols))
+                                     )
+
 
             top_features = importance_df.head(top_n)
             st.dataframe(top_features.style.background_gradient(cmap="Blues", subset=["Importance"]))
