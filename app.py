@@ -145,10 +145,10 @@ if st.checkbox("Enable Machine Learning Model Training"):
                     "Importance": feature_importance
                 }).sort_values(by="Importance", ascending=False)
 
-                 if len(feature_cols) == 1:
-                         top_n = 1
-                else:
-                          top_n = st.slider( "Show top N features:",min_value=1, max_value=len(feature_cols),value=min(10, len(feature_cols)) )
+            if len(feature_cols) == 1:
+                    top_n = 1
+            else:
+                    top_n = st.slider( "Show top N features:",min_value=1, max_value=len(feature_cols),value=min(10, len(feature_cols)) )
 
 
 
