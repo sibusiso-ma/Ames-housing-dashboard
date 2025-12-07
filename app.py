@@ -87,7 +87,7 @@ target_col = st.selectbox("Select target variable (y):", ['SalePrice'])
 feature_cols = st.multiselect("Select feature columns (X):", df.drop('SalePrice', axis=1).columns.tolist())
 
 if st.checkbox("Enable Machine Learning Model Training"):
-    if len(feature_cols) > 0:
+     if len(feature_cols) > 0:
          X = df[feature_cols]
          y = df[target_col]
 
@@ -181,8 +181,9 @@ if st.checkbox("Enable Machine Learning Model Training"):
                  sns.barplot(x="Importance", y="Feature", data=top_features, palette="cool")
                  ax.set_title(f"Top {top_n} Important Features for {model_choice}")
                  st.pyplot(fig)
-       else:
-                 st.warning("Feature importance not available for this model type.")
+             
+     else:
+        st.warning("Feature importance not available for this model type.")
          
 
 
