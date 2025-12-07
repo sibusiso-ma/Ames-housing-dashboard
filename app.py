@@ -107,84 +107,84 @@ if st.checkbox("Enable Machine Learning Model Training"):
             #,('onehotencoder', OneHotEncoder(handle_unknown='ignore'))#
 
             # Pipeline with Imputer + StandardScaler
-        numerical_cols_transformer = Pipeline(steps = [('imputer', SimpleImputer(strategy='median')),('scaler', StandardScaler())])
-        categorical_cols_transformer= Pipeline(steps=[('imputer', SimpleImputer(strategy='most_frequent')),('onehotencoder', OneHotEncoder(handle_unknown='ignore'))] )
+         numerical_cols_transformer = Pipeline(steps = [('imputer', SimpleImputer(strategy='median')),('scaler', StandardScaler())])
+         categorical_cols_transformer= Pipeline(steps=[('imputer', SimpleImputer(strategy='most_frequent')),('onehotencoder', OneHotEncoder(handle_unknown='ignore'))] )
             
-        preprocessor = ColumnTransformer([('num', numerical_cols_transformer, numerical_cols),('cat',categorical_cols_transformer,categorical_cols)],remainder='drop')
+         preprocessor = ColumnTransformer([('num', numerical_cols_transformer, numerical_cols),('cat',categorical_cols_transformer,categorical_cols)],remainder='drop')
             
 
-        if model_choice == "Linear Regression":
+         if model_choice == "Linear Regression":
             model= LinearRegression()
-        elif model_choice == "Lasso":
+         elif model_choice == "Lasso":
             model= Lasso(alpha=0.1)
-        elif model_choice == "Ridge":
+         elif model_choice == "Ridge":
             model= Ridge(alpha=1.0)
-        elif model_choice == "Random Forest":
+         elif model_choice == "Random Forest":
             model= RandomForestRegressor(n_estimators=200, random_state=42)
 
-        pipeline = Pipeline([('preprocessor',preprocessor),('model',model)])  
+         pipeline = Pipeline([('preprocessor',preprocessor),('model',model)])  
 
         # Train model
-        pipeline.fit(X_train, y_train)
-        preds = pipeline.predict(X_test)
+         pipeline.fit(X_train, y_train)
+         preds = pipeline.predict(X_test)
 
             # Metrics
-        st.subheader("Model Performance")
-        st.write(f"Mean Absolute Error: {mean_absolute_error(y_test, preds):.4f}")
-        st.write(f"Mean Squared Error: {mean_squared_error(y_test, preds):.4f}")
-        st.write(f"R² Score: {r2_score(y_test, preds):.4f}")
+         st.subheader("Model Performance")
+         st.write(f"Mean Absolute Error: {mean_absolute_error(y_test, preds):.4f}")
+         st.write(f"Mean Squared Error: {mean_squared_error(y_test, preds):.4f}")
+         st.write(f"R² Score: {r2_score(y_test, preds):.4f}")
 
             # ============================================
             # FEATURE IMPORTANCE SECTION (Dynamic)
             # ============================================
-        st.markdown("---")
-        st.subheader(f"Feature Importance / Coefficients ({model_choice})")
+         st.markdown("---")
+         st.subheader(f"Feature Importance / Coefficients ({model_choice})")
 
-        model = pipeline.named_steps['model']
-        feature_importance = None
+         model = pipeline.named_steps['model']
+         feature_importance = None
 
             # Handle model type
-        if model_choice == "Random Forest":
+         if model_choice == "Random Forest":
             feature_importance = model.feature_importances_
-        elif model_choice in ["Linear Regression", "Lasso", "Ridge"]:
+         elif model_choice in ["Linear Regression", "Lasso", "Ridge"]:
             feature_importance = np.abs(model.coef_)  # magnitude of coefficients
                 
                 
 
-        if feature_importance is not None:
-            feature_names = preprocessor.get_feature_names_out()
+         if feature_importance is not None:
+             feature_names = preprocessor.get_feature_names_out()
             
-            importance_df = pd.DataFrame({
+             importance_df = pd.DataFrame({
                     "Feature": feature_names,
                     "Importance": feature_importance
                 }).sort_values(by="Importance", ascending=False)
                 
-            importance_df['original']=importance_df['Feature'].str.split("_").str[2]
+             importance_df['original']=importance_df['Feature'].str.split("_").str[2]
                 
-            grouped = importance_df.groupby("original")["Importance"].mean().sort_values(ascending=False)
-            grouped=grouped.reset_index()
-            grouped['Feature'] = grouped['original']
-            grouped = grouped.drop('original',axis=1)
+             grouped = importance_df.groupby("original")["Importance"].mean().sort_values(ascending=False)
+             grouped=grouped.reset_index()
+             grouped['Feature'] = grouped['original']
+             grouped = grouped.drop('original',axis=1)
                 
-            if len(feature_cols)==1:
-                top_n =1
-            else:
+             if len(feature_cols)==1:
+                 top_n =1
+             else:
                     
 
-                top_n = st.slider("Show top N features:", 1, len(grouped["Feature"]), min(10, len(grouped["Feature"])))
+                 top_n = st.slider("Show top N features:", 1, len(grouped["Feature"]), min(10, len(grouped["Feature"])))
 
-                top_features = grouped.head(top_n)
-                st.dataframe(top_features.style.background_gradient(cmap="Blues", subset=["Importance"]))
+                 top_features = grouped.head(top_n)
+                 st.dataframe(top_features.style.background_gradient(cmap="Blues", subset=["Importance"]))
 
                 # Horizontal barplot
-                fig, ax = plt.subplots(figsize=(8, 0.4 * top_n + 1))
-                sns.barplot(x="Importance", y="Feature", data=top_features, palette="cool")
-                ax.set_title(f"Top {top_n} Important Features for {model_choice}")
-                st.pyplot(fig)
-            else:
-                st.warning("Feature importance not available for this model type.")
-        else:
-            st.warning("Please select at least ONE feature column!")
+                 fig, ax = plt.subplots(figsize=(8, 0.4 * top_n + 1))
+                 sns.barplot(x="Importance", y="Feature", data=top_features, palette="cool")
+                 ax.set_title(f"Top {top_n} Important Features for {model_choice}")
+                 st.pyplot(fig)
+             else:
+                 st.warning("Feature importance not available for this model type.")
+         else:
+             st.warning("Please select at least ONE feature column!")
 
 
 
