@@ -181,7 +181,7 @@ if st.checkbox("Enable Machine Learning Model Training"):
                  sns.barplot(x="Importance", y="Feature", data=top_features, palette="cool")
                  ax.set_title(f"Top {top_n} Important Features for {model_choice}")
                  st.pyplot(fig)
-      else:
+       else:
                  st.warning("Feature importance not available for this model type.")
          
 
