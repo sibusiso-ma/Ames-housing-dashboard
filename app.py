@@ -182,13 +182,13 @@ if st.checkbox("Enable Machine Learning Model Training"):
                  ax.set_title(f"Top {top_n} Important Features for {model_choice}")
                  st.pyplot(fig)
              
-     else:
-        st.warning("Feature importance not available for this model type.")
+        else:
+           st.warning("Feature importance not available for this model type.")
          
 
 
- else:
-             st.warning("Please select at least ONE feature column!")
+     else:
+         st.warning("Please select at least ONE feature column!")
 
 
 
