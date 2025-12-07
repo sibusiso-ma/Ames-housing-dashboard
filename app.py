@@ -166,9 +166,9 @@ if st.checkbox("Enable Machine Learning Model Training"):
              grouped['Feature'] = grouped['original']
              grouped = grouped.drop('original',axis=1)
                 
-              if len(feature_cols)==1:
+             if len(feature_cols)==1:
                  top_n =1
-              else:
+             else:
                     
 
                  top_n = st.slider("Show top N features:", 1, len(grouped["Feature"]), min(10, len(grouped["Feature"])))
@@ -181,7 +181,7 @@ if st.checkbox("Enable Machine Learning Model Training"):
                  sns.barplot(x="Importance", y="Feature", data=top_features, palette="cool")
                  ax.set_title(f"Top {top_n} Important Features for {model_choice}")
                  st.pyplot(fig)
-         else:
+       else:
                  st.warning("Feature importance not available for this model type.")
          
     else:
