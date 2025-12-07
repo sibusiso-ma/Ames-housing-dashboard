@@ -31,147 +31,147 @@ df = load_data()
 
    
 # Data Preview
-    st.subheader('Data Preview')
-    st.write(df.head())
+st.subheader('Data Preview')
+st.write(df.head())
 
-    st.subheader('Data Summary')
-    st.write(df.describe(include='all'))
+st.subheader('Data Summary')
+st.write(df.describe(include='all'))
 
-    # Data Filtering
-    st.subheader('Filter Data')
-    columns = df.columns.tolist()
-    selected_col = st.selectbox('Select column to filter by:', columns)
-    unique_values = df[selected_col].unique()
-    selected_value = st.selectbox('Select value:', unique_values)
+# Data Filtering
+st.subheader('Filter Data')
+columns = df.columns.tolist()
+selected_col = st.selectbox('Select column to filter by:', columns)
+unique_values = df[selected_col].unique()
+selected_value = st.selectbox('Select value:', unique_values)
 
-    filtered_df = df[df[selected_col] == selected_value]
-    st.write(filtered_df)
+filtered_df = df[df[selected_col] == selected_value]
+st.write(filtered_df)
 
-    # Histogram Feature Selection
-    st.subheader('Histogram Distribution of Feature')
-    numerical_cols = df.select_dtypes(include=['float64','int64']).columns.tolist()
-    feature = st.selectbox('Select numerical feature:', numerical_cols)
+# Histogram Feature Selection
+st.subheader('Histogram Distribution of Feature')
+numerical_cols = df.select_dtypes(include=['float64','int64']).columns.tolist()
+feature = st.selectbox('Select numerical feature:', numerical_cols)
 
-    fig, ax = plt.subplots()
-    ax.hist(df[feature], bins=30)
-    ax.set_xlabel(feature)
-    ax.set_ylabel("Count")
-    ax.set_title(f"Histogram of {feature}")
+fig, ax = plt.subplots()
+ax.hist(df[feature], bins=30)
+ax.set_xlabel(feature)
+ax.set_ylabel("Count")
+ax.set_title(f"Histogram of {feature}")
+st.pyplot(fig)
+
+# Correlation Heatmap Optional
+if st.checkbox("Show Correlation Heatmap"):
+    corr = df.corr(numeric_only=True)
+    fig, ax = plt.subplots(figsize=(10,6))
+    sns.heatmap(corr, cmap="coolwarm", center=0)
     st.pyplot(fig)
 
-    # Correlation Heatmap Optional
-    if st.checkbox("Show Correlation Heatmap"):
-        corr = df.corr(numeric_only=True)
-        fig, ax = plt.subplots(figsize=(10,6))
-        sns.heatmap(corr, cmap="coolwarm", center=0)
-        st.pyplot(fig)
+# Scatter Plot with Correlation Coefficient
+st.subheader('Scatter Plot & Correlation Coefficient')
+x_column = st.selectbox('Select x-axis column:', numerical_cols, key="scatter_x")
+y_column = st.selectbox('Select y-axis column:', numerical_cols, key="scatter_y")
 
-    # Scatter Plot with Correlation Coefficient
-    st.subheader('Scatter Plot & Correlation Coefficient')
-    x_column = st.selectbox('Select x-axis column:', numerical_cols, key="scatter_x")
-    y_column = st.selectbox('Select y-axis column:', numerical_cols, key="scatter_y")
-
-    if st.button('Generate Scatter Plot'):
-        fig, ax = plt.subplots()
-        sns.scatterplot(data=df, x=x_column, y=y_column, ax=ax)
-        st.pyplot(fig)
+if st.button('Generate Scatter Plot'):
+     fig, ax = plt.subplots()
+     sns.scatterplot(data=df, x=x_column, y=y_column, ax=ax)
+     st.pyplot(fig)
         
         # Compute and show correlation
-        corr_value = df[[x_column, y_column]].corr().iloc[0, 1]
-        st.success(f"Correlation coefficient between **{x_column}** and **{y_column}**: **{corr_value:.4f}**")
+     corr_value = df[[x_column, y_column]].corr().iloc[0, 1]
+     st.success(f"Correlation coefficient between **{x_column}** and **{y_column}**: **{corr_value:.4f}**")
 
-    # Machine Learning Section
-    st.subheader("Machine Learning Trainer")
+# Machine Learning Section
+st.subheader("Machine Learning Trainer")
 
-    target_col = st.selectbox("Select target variable (y):", ['SalePrice'])
-    feature_cols = st.multiselect("Select feature columns (X):", df.drop('SalePrice', axis=1).columns.tolist())
+target_col = st.selectbox("Select target variable (y):", ['SalePrice'])
+feature_cols = st.multiselect("Select feature columns (X):", df.drop('SalePrice', axis=1).columns.tolist())
 
-    if st.checkbox("Enable Machine Learning Model Training"):
-        if len(feature_cols) > 0:
-            X = df[feature_cols]
-            y = df[target_col]
+if st.checkbox("Enable Machine Learning Model Training"):
+    if len(feature_cols) > 0:
+         X = df[feature_cols]
+         y = df[target_col]
 
             # Train-Test split
-            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
             
             # numerical cols
-            numerical_cols = X.select_dtypes(include=['int64','float64']).columns.tolist()
+         numerical_cols = X.select_dtypes(include=['int64','float64']).columns.tolist()
             # categorical_cols
-            categorical_cols = X.select_dtypes(include='object').columns.tolist()
+         categorical_cols = X.select_dtypes(include='object').columns.tolist()
             
             
 
             # Model Selection
-            model_choice = st.selectbox("Choose ML Model:", 
+        model_choice = st.selectbox("Choose ML Model:", 
                                         ["Linear Regression", "Lasso", "Ridge", "Random Forest"])
             #,('onehotencoder', OneHotEncoder(handle_unknown='ignore'))#
 
             # Pipeline with Imputer + StandardScaler
-            numerical_cols_transformer = Pipeline(steps = [('imputer', SimpleImputer(strategy='median')),('scaler', StandardScaler())])
-            categorical_cols_transformer= Pipeline(steps=[('imputer', SimpleImputer(strategy='most_frequent')),('onehotencoder', OneHotEncoder(handle_unknown='ignore'))] )
+        numerical_cols_transformer = Pipeline(steps = [('imputer', SimpleImputer(strategy='median')),('scaler', StandardScaler())])
+        categorical_cols_transformer= Pipeline(steps=[('imputer', SimpleImputer(strategy='most_frequent')),('onehotencoder', OneHotEncoder(handle_unknown='ignore'))] )
             
-            preprocessor = ColumnTransformer([('num', numerical_cols_transformer, numerical_cols),('cat',categorical_cols_transformer,categorical_cols)],remainder='drop')
+        preprocessor = ColumnTransformer([('num', numerical_cols_transformer, numerical_cols),('cat',categorical_cols_transformer,categorical_cols)],remainder='drop')
             
 
-            if model_choice == "Linear Regression":
-                model= LinearRegression()
-            elif model_choice == "Lasso":
-                model= Lasso(alpha=0.1)
-            elif model_choice == "Ridge":
-                model= Ridge(alpha=1.0)
-            elif model_choice == "Random Forest":
-                model= RandomForestRegressor(n_estimators=200, random_state=42)
+        if model_choice == "Linear Regression":
+            model= LinearRegression()
+        elif model_choice == "Lasso":
+            model= Lasso(alpha=0.1)
+        elif model_choice == "Ridge":
+            model= Ridge(alpha=1.0)
+        elif model_choice == "Random Forest":
+            model= RandomForestRegressor(n_estimators=200, random_state=42)
 
-            pipeline = Pipeline([('preprocessor',preprocessor),('model',model)])  
+        pipeline = Pipeline([('preprocessor',preprocessor),('model',model)])  
 
-            # Train model
-            pipeline.fit(X_train, y_train)
-            preds = pipeline.predict(X_test)
+        # Train model
+        pipeline.fit(X_train, y_train)
+        preds = pipeline.predict(X_test)
 
             # Metrics
-            st.subheader("Model Performance")
-            st.write(f"Mean Absolute Error: {mean_absolute_error(y_test, preds):.4f}")
-            st.write(f"Mean Squared Error: {mean_squared_error(y_test, preds):.4f}")
-            st.write(f"R² Score: {r2_score(y_test, preds):.4f}")
+        st.subheader("Model Performance")
+        st.write(f"Mean Absolute Error: {mean_absolute_error(y_test, preds):.4f}")
+        st.write(f"Mean Squared Error: {mean_squared_error(y_test, preds):.4f}")
+        st.write(f"R² Score: {r2_score(y_test, preds):.4f}")
 
             # ============================================
             # FEATURE IMPORTANCE SECTION (Dynamic)
             # ============================================
-            st.markdown("---")
-            st.subheader(f"Feature Importance / Coefficients ({model_choice})")
+        st.markdown("---")
+        st.subheader(f"Feature Importance / Coefficients ({model_choice})")
 
-            model = pipeline.named_steps['model']
-            feature_importance = None
+        model = pipeline.named_steps['model']
+        feature_importance = None
 
             # Handle model type
-            if model_choice == "Random Forest":
-                feature_importance = model.feature_importances_
-            elif model_choice in ["Linear Regression", "Lasso", "Ridge"]:
-                feature_importance = np.abs(model.coef_)  # magnitude of coefficients
+        if model_choice == "Random Forest":
+            feature_importance = model.feature_importances_
+        elif model_choice in ["Linear Regression", "Lasso", "Ridge"]:
+            feature_importance = np.abs(model.coef_)  # magnitude of coefficients
                 
                 
 
-            if feature_importance is not None:
-                feature_names = preprocessor.get_feature_names_out()
+        if feature_importance is not None:
+            feature_names = preprocessor.get_feature_names_out()
             
-                importance_df = pd.DataFrame({
+            importance_df = pd.DataFrame({
                     "Feature": feature_names,
                     "Importance": feature_importance
                 }).sort_values(by="Importance", ascending=False)
                 
-                importance_df['original']=importance_df['Feature'].str.split("_").str[2]
+            importance_df['original']=importance_df['Feature'].str.split("_").str[2]
                 
-                grouped = importance_df.groupby("original")["Importance"].mean().sort_values(ascending=False)
-                grouped=grouped.reset_index()
-                grouped['Feature'] = grouped['original']
-                grouped = grouped.drop('original',axis=1)
+            grouped = importance_df.groupby("original")["Importance"].mean().sort_values(ascending=False)
+            grouped=grouped.reset_index()
+            grouped['Feature'] = grouped['original']
+            grouped = grouped.drop('original',axis=1)
                 
-                if len(feature_cols)==1:
-                    top_n =1
-                else:
+            if len(feature_cols)==1:
+                top_n =1
+            else:
                     
 
-                   top_n = st.slider("Show top N features:", 1, len(grouped["Feature"]), min(10, len(grouped["Feature"])))
+                top_n = st.slider("Show top N features:", 1, len(grouped["Feature"]), min(10, len(grouped["Feature"])))
 
                 top_features = grouped.head(top_n)
                 st.dataframe(top_features.style.background_gradient(cmap="Blues", subset=["Importance"]))
@@ -186,6 +186,5 @@ df = load_data()
         else:
             st.warning("Please select at least ONE feature column!")
 
-else:
-    st.write("Waiting for CSV upload...")
+
 
