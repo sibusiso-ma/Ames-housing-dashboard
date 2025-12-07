@@ -102,7 +102,7 @@ if st.checkbox("Enable Machine Learning Model Training"):
             
 
             # Model Selection
-        model_choice = st.selectbox("Choose ML Model:", 
+         model_choice = st.selectbox("Choose ML Model:", 
                                         ["Linear Regression", "Lasso", "Ridge", "Random Forest"])
             #,('onehotencoder', OneHotEncoder(handle_unknown='ignore'))#
 
